@@ -1198,8 +1198,7 @@ button.enlace-cuenta:focus-visible {
   width: 220px;
 }
 
-.pagina-login input,
-.pagina-registro input {
+.pagina-login input {
   background-color: #ffffff;
   color: #111111;
 }

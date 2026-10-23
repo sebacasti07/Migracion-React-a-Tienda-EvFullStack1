@@ -65,7 +65,7 @@ function CrearUsuario({ usuarios = [], guardarUsuarios }) {
   }
 
   return (
-    <div className="pagina-login">
+    <div className="pagina-registro">
       <h2>Crear usuario</h2>
 
       <form onSubmit={crearUsuario}>
