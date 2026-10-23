@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  zoom: 80%;
+}
+
 body {
   background-color: #111111;
   color: #f5f5f5;
@@ -34,33 +38,45 @@ h1, h2, h3, button, nav a {
 .encabezado-sitio .contenedor {
   align-items: center;
   display: flex;
-  gap: 30px;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .logo-sitio {
   color: inherit;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  text-align: center;
   text-decoration: none;
 }
 
 .encabezado-sitio h1 {
-  color: #ffad1f;
   margin: 0;
-  white-space: nowrap;
+}
+
+.logo-sitio img {
+  display: block;
+  height: auto;
+  margin: 0 auto;
+  max-width: 100%;
+  width: 340px;
 }
 
 .bloque-navegacion {
-  align-items: flex-end;
+  align-items: center;
   display: flex;
   flex-direction: column;
-  margin-left: auto;
+  margin-left: 0;
+  width: 100%;
 }
 
-.encabezado-sitio .contenedor > nav {
-  margin-left: auto;
+.bloque-navegacion nav ul {
+  justify-content: center;
 }
 
 .bloque-navegacion .cuadro-cuenta {
-  align-self: flex-end;
+  align-self: center;
 }
 
 .acciones-header {
@@ -772,6 +788,10 @@ button:hover, button:focus-visible {
 .pagina-registro button {
   background-color: #f28c00;
   width: 100%;
+}
+
+.pagina-registro .boton-mostrar-password {
+  width: auto;
 }
 
 .pagina-registro button:hover {

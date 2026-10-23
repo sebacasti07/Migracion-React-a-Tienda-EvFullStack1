@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CampoContraseña from "../components/CampoContraseña";
+import { obtenerConfiguracionAdministrador } from "../utils/accesoAdministrador";
 
 function Login({ usuarios = [] }) {
   const [usuario, setUsuario] = useState("");
@@ -12,9 +13,11 @@ function Login({ usuarios = [] }) {
     event.preventDefault();
 
     const nombreUsuario = usuario.trim();
+    const administrador = obtenerConfiguracionAdministrador();
     const esAdministrador =
       nombreUsuario.toLowerCase() === "admin" &&
-      password === "Admin1234@";
+      Boolean(administrador) &&
+      password === administrador.password;
     const usuarioRegistrado = usuarios.some(
       (cuenta) =>
         cuenta.usuario.toLowerCase() === nombreUsuario.toLowerCase() &&
@@ -22,7 +25,7 @@ function Login({ usuarios = [] }) {
     );
 
     if (esAdministrador) {
-      sessionStorage.setItem("usuario", nombreUsuario);
+      sessionStorage.setItem("usuario", administrador.usuario);
       sessionStorage.setItem("rol", "admin");
       navigate("/admin");
     } else if (usuarioRegistrado) {
@@ -70,7 +73,9 @@ function Login({ usuarios = [] }) {
       </form>
 
       <p className="nota-login">
-        La autenticación de esta demostración se guarda solo en este navegador.
+        Acceso de administrador: usuario <strong>Admin</strong> y contraseña
+        <strong> Admin1234@</strong>. Esta demostración guarda la autenticación
+        solo en este navegador.
       </p>
     </div>
   );

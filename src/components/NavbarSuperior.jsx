@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import logoInicio from "../images/logo-inicio-transparente.png";
 
 function NavbarSuperior({ carrito = [] }) {
   const navigate = useNavigate();
@@ -23,7 +24,9 @@ function NavbarSuperior({ carrito = [] }) {
     <header className="encabezado-sitio">
       <div className="contenedor">
         <Link to="/" className="logo-sitio">
-          <h1>Mi Tienda En Linea po</h1>
+          <h1>
+            <img src={logoInicio} alt="Videogiochis" />
+          </h1>
         </Link>
 
         <div className="bloque-navegacion">
@@ -56,6 +59,11 @@ function NavbarSuperior({ carrito = [] }) {
               <>
                 {sessionStorage.getItem("rol") === "admin" && (
                   <Link className="enlace-cuenta" to="/admin">Administración</Link>
+                )}
+                {sessionStorage.getItem("rol") !== "admin" && (
+                  <Link className="enlace-cuenta" to="/cambiar-password">
+                    Cambiar contraseña
+                  </Link>
                 )}
                 <button
                   type="button"

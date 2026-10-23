@@ -33,6 +33,7 @@ function Admin({
   const [productoForm, setProductoForm] = useState(productoVacio);
   const [articuloForm, setArticuloForm] = useState(articuloVacio);
   const [usuarioForm, setUsuarioForm] = useState({ usuario: "", password: "" });
+  const [confirmarPasswordUsuario, setConfirmarPasswordUsuario] = useState("");
   const [usuarioEditado, setUsuarioEditado] = useState("");
   const [aviso, setAviso] = useState("");
   const [confirmacion, setConfirmacion] = useState(null);
@@ -147,6 +148,19 @@ function Admin({
       return;
     }
 
+    if (
+      (usuarioEditado && usuarioForm.password && usuarioForm.password.length < 8) ||
+      (!usuarioEditado && usuarioForm.password.length < 8)
+    ) {
+      setAviso("La contraseña debe tener al menos 8 caracteres.");
+      return;
+    }
+
+    if (usuarioForm.password && usuarioForm.password !== confirmarPasswordUsuario) {
+      setAviso("Las contraseñas no coinciden.");
+      return;
+    }
+
     if (usuarioEditado) {
       confirmarAccion("¿Estás seguro de guardar los cambios del usuario?", () => {
         const actualizados = usuarios.map((cuenta) => {
@@ -160,18 +174,16 @@ function Admin({
         guardarUsuarios(actualizados);
         setAviso("Usuario actualizado.");
         setUsuarioForm({ usuario: "", password: "" });
+        setConfirmarPasswordUsuario("");
         setUsuarioEditado("");
       });
       return;
     }
 
-    if (usuarioForm.password.length < 4) {
-      setAviso("La contraseña debe tener al menos 4 caracteres.");
-      return;
-    }
     guardarUsuarios([...usuarios, { usuario: nombre, password: usuarioForm.password }]);
     setAviso("Usuario creado.");
     setUsuarioForm({ usuario: "", password: "" });
+    setConfirmarPasswordUsuario("");
     setUsuarioEditado("");
   }
 
@@ -181,6 +193,7 @@ function Admin({
       if (usuarioEditado === nombre) {
         setUsuarioEditado("");
         setUsuarioForm({ usuario: "", password: "" });
+        setConfirmarPasswordUsuario("");
       }
       setAviso("Usuario eliminado.");
     }, true);
@@ -362,15 +375,17 @@ function Admin({
       {seccion === "usuarios" && (
         <div className="admin-contenido">
           <div>
-            <h3>{usuarioEditado ? "Editar usuario" : "Crear usuario"}</h3>
+            <h3>{usuarioEditado ? "Editar usuario o cambiar contraseña" : "Crear usuario"}</h3>
             <form className="formulario-admin" onSubmit={guardarUsuario}>
               <label htmlFor="admin-usuario-nombre">Usuario</label>
               <input id="admin-usuario-nombre" value={usuarioForm.usuario} onChange={(event) => actualizarCampo(setUsuarioForm, "usuario", event.target.value)} required />
-              <label htmlFor="admin-usuario-password">Contraseña {usuarioEditado && "(dejar vacía para conservarla)"}</label>
-              <CampoContraseña id="admin-usuario-password" autoComplete="new-password" value={usuarioForm.password} onChange={(event) => actualizarCampo(setUsuarioForm, "password", event.target.value)} required={!usuarioEditado} />
+              <label htmlFor="admin-usuario-password">Nueva contraseña {usuarioEditado && "(dejar vacía para conservarla)"}</label>
+              <CampoContraseña id="admin-usuario-password" autoComplete="new-password" minLength={8} value={usuarioForm.password} onChange={(event) => actualizarCampo(setUsuarioForm, "password", event.target.value)} required={!usuarioEditado} />
+              <label htmlFor="admin-usuario-password-confirmar">Confirmar nueva contraseña</label>
+              <CampoContraseña id="admin-usuario-password-confirmar" autoComplete="new-password" minLength={8} value={confirmarPasswordUsuario} onChange={(event) => setConfirmarPasswordUsuario(event.target.value)} required={!usuarioEditado || Boolean(usuarioForm.password)} />
               <div className="acciones-admin">
                 <button type="submit">{usuarioEditado ? "Guardar cambios" : "Crear usuario"}</button>
-                {usuarioEditado && <button type="button" className="boton-secundario-admin" onClick={() => { setUsuarioEditado(""); setUsuarioForm({ usuario: "", password: "" }); }}>Cancelar</button>}
+                {usuarioEditado && <button type="button" className="boton-secundario-admin" onClick={() => { setUsuarioEditado(""); setUsuarioForm({ usuario: "", password: "" }); setConfirmarPasswordUsuario(""); }}>Cancelar</button>}
               </div>
             </form>
             <p className="nota-login">Las cuentas y contraseñas se guardan localmente en texto sin cifrar. Esta función es solo para demostración.</p>
@@ -382,7 +397,8 @@ function Admin({
                 <li key={cuenta.usuario}>
                   <span>{cuenta.usuario}</span>
                   <div className="acciones-admin">
-                    <button type="button" onClick={() => { setUsuarioEditado(cuenta.usuario); setUsuarioForm({ usuario: cuenta.usuario, password: "" }); }}>Editar</button>
+                    <button type="button" onClick={() => { setUsuarioEditado(cuenta.usuario); setUsuarioForm({ usuario: cuenta.usuario, password: "" }); setConfirmarPasswordUsuario(""); }}>Editar</button>
+                    <button type="button" onClick={() => { setUsuarioEditado(cuenta.usuario); setUsuarioForm({ usuario: cuenta.usuario, password: "" }); setConfirmarPasswordUsuario(""); setAviso(""); }}>Cambiar contraseña</button>
                     <button type="button" className="boton-eliminar-admin" onClick={() => eliminarUsuario(cuenta.usuario)}>Eliminar</button>
                   </div>
                 </li>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Login from "./pages/login";
 import CrearUsuario from "./pages/CrearUsuario";
+import CambiarPassword from "./pages/CambiarPassword";
 import {
   BrowserRouter,
   Routes,
@@ -256,6 +257,10 @@ function App() {
 <Route
   path="/registro"
   element={<CrearUsuario usuarios={usuarios} guardarUsuarios={setUsuarios} />}
+/>
+<Route
+  path="/cambiar-password"
+  element={<CambiarPassword usuarios={usuarios} guardarUsuarios={setUsuarios} />}
 />
 <Route
   path="/productos"
