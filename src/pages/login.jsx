@@ -1,25 +1,20 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CampoContraseña from "../components/CampoContraseña";
-import { leerAlmacenamiento } from "../utils/almacenamiento";
 
 function Login({ usuarios = [] }) {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const credencialesAdmin = leerAlmacenamiento("adminCredenciales", null);
-  const accesoInicialConfigurado = Boolean(
-    credencialesAdmin?.usuario && typeof credencialesAdmin.password === "string"
-  );
 
   function iniciarSesion(event) {
     event.preventDefault();
 
     const nombreUsuario = usuario.trim();
-    const esAdministrador = credencialesAdmin &&
-      credencialesAdmin.usuario.toLowerCase() === nombreUsuario.toLowerCase() &&
-      credencialesAdmin.password === password;
+    const esAdministrador =
+      nombreUsuario.toLowerCase() === "admin" &&
+      password === "Admin1234@";
     const usuarioRegistrado = usuarios.some(
       (cuenta) =>
         cuenta.usuario.toLowerCase() === nombreUsuario.toLowerCase() &&
@@ -74,11 +69,6 @@ function Login({ usuarios = [] }) {
         <button type="submit">Ingresar</button>
       </form>
 
-      {!accesoInicialConfigurado && (
-        <p className="nota-login">
-          <Link to="/configurar-acceso">Configurar acceso inicial</Link>
-        </p>
-      )}
       <p className="nota-login">
         La autenticación de esta demostración se guarda solo en este navegador.
       </p>

@@ -35,14 +35,17 @@ function Admin({
   const [usuarioForm, setUsuarioForm] = useState({ usuario: "", password: "" });
   const [usuarioEditado, setUsuarioEditado] = useState("");
   const [aviso, setAviso] = useState("");
+  const [confirmacion, setConfirmacion] = useState(null);
 
   if (sessionStorage.getItem("rol") !== "admin") {
     return <Navigate to="/login" replace />;
   }
 
   function editarProducto(producto) {
-    setProductoForm({ ...producto, precio: String(producto.precio) });
-    setAviso("");
+    confirmarAccion("¿Estás seguro de editar este producto?", () => {
+      setProductoForm({ ...producto, precio: String(producto.precio) });
+      setAviso("");
+    });
   }
 
   function guardarProducto(event) {
@@ -55,32 +58,40 @@ function Admin({
     }
 
     if (productoForm.id) {
-      guardarProductos(productos.map((producto) =>
-        producto.id === productoForm.id
-          ? { ...productoForm, nombre, precio }
-          : producto
-      ));
-      setAviso("Producto actualizado.");
-    } else {
-      const id = productos.reduce((mayor, producto) => Math.max(mayor, producto.id), 0) + 1;
-      guardarProductos([...productos, { ...productoForm, id, nombre, precio }]);
-      setAviso("Producto creado.");
+      confirmarAccion("¿Estás seguro de guardar los cambios del producto?", () => {
+        guardarProductos(productos.map((producto) =>
+          producto.id === productoForm.id
+            ? { ...productoForm, nombre, precio }
+            : producto
+        ));
+        setAviso("Producto actualizado.");
+        setProductoForm(productoVacio);
+      });
+      return;
     }
+
+    const id = productos.reduce((mayor, producto) => Math.max(mayor, producto.id), 0) + 1;
+    guardarProductos([...productos, { ...productoForm, id, nombre, precio }]);
+    setAviso("Producto creado.");
     setProductoForm(productoVacio);
   }
 
   function eliminarProducto(id) {
-    guardarProductos(productos.filter((producto) => producto.id !== id));
-    setProductoForm((actual) => actual.id === id ? productoVacio : actual);
-    setAviso("Producto eliminado.");
+    confirmarAccion("¿Estás seguro de eliminar este producto?", () => {
+      guardarProductos(productos.filter((producto) => producto.id !== id));
+      setProductoForm((actual) => actual.id === id ? productoVacio : actual);
+      setAviso("Producto eliminado.");
+    }, true);
   }
 
   function editarArticulo(articulo) {
-    setArticuloForm({
-      ...articulo,
-      parrafosTexto: articulo.parrafos.join("\n\n")
+    confirmarAccion("¿Estás seguro de editar este artículo?", () => {
+      setArticuloForm({
+        ...articulo,
+        parrafosTexto: articulo.parrafos.join("\n\n")
+      });
+      setAviso("");
     });
-    setAviso("");
   }
 
   function guardarArticulo(event) {
@@ -101,21 +112,27 @@ function Admin({
 
     const nuevoArticulo = { slug, titulo, resumen, parrafos };
     if (articuloForm.slugOriginal) {
-      guardarArticulos(articulos.map((articulo) =>
-        articulo.slug === articuloForm.slugOriginal ? nuevoArticulo : articulo
-      ));
-      setAviso("Artículo actualizado.");
-    } else {
-      guardarArticulos([...articulos, nuevoArticulo]);
-      setAviso("Artículo creado.");
+      confirmarAccion("¿Estás seguro de guardar los cambios del artículo?", () => {
+        guardarArticulos(articulos.map((articulo) =>
+          articulo.slug === articuloForm.slugOriginal ? nuevoArticulo : articulo
+        ));
+        setAviso("Artículo actualizado.");
+        setArticuloForm(articuloVacio);
+      });
+      return;
     }
+
+    guardarArticulos([...articulos, nuevoArticulo]);
+    setAviso("Artículo creado.");
     setArticuloForm(articuloVacio);
   }
 
   function eliminarArticulo(slug) {
-    guardarArticulos(articulos.filter((articulo) => articulo.slug !== slug));
-    setArticuloForm((actual) => actual.slugOriginal === slug ? articuloVacio : actual);
-    setAviso("Artículo eliminado.");
+    confirmarAccion("¿Estás seguro de eliminar este artículo?", () => {
+      guardarArticulos(articulos.filter((articulo) => articulo.slug !== slug));
+      setArticuloForm((actual) => actual.slugOriginal === slug ? articuloVacio : actual);
+      setAviso("Artículo eliminado.");
+    }, true);
   }
 
   function guardarUsuario(event) {
@@ -131,35 +148,42 @@ function Admin({
     }
 
     if (usuarioEditado) {
-      const actualizados = usuarios.map((cuenta) => {
-        if (cuenta.usuario !== usuarioEditado) return cuenta;
-        return {
-          ...cuenta,
-          usuario: nombre,
-          ...(usuarioForm.password ? { password: usuarioForm.password } : {})
-        };
+      confirmarAccion("¿Estás seguro de guardar los cambios del usuario?", () => {
+        const actualizados = usuarios.map((cuenta) => {
+          if (cuenta.usuario !== usuarioEditado) return cuenta;
+          return {
+            ...cuenta,
+            usuario: nombre,
+            ...(usuarioForm.password ? { password: usuarioForm.password } : {})
+          };
+        });
+        guardarUsuarios(actualizados);
+        setAviso("Usuario actualizado.");
+        setUsuarioForm({ usuario: "", password: "" });
+        setUsuarioEditado("");
       });
-      guardarUsuarios(actualizados);
-      setAviso("Usuario actualizado.");
-    } else {
-      if (usuarioForm.password.length < 4) {
-        setAviso("La contraseña debe tener al menos 4 caracteres.");
-        return;
-      }
-      guardarUsuarios([...usuarios, { usuario: nombre, password: usuarioForm.password }]);
-      setAviso("Usuario creado.");
+      return;
     }
+
+    if (usuarioForm.password.length < 4) {
+      setAviso("La contraseña debe tener al menos 4 caracteres.");
+      return;
+    }
+    guardarUsuarios([...usuarios, { usuario: nombre, password: usuarioForm.password }]);
+    setAviso("Usuario creado.");
     setUsuarioForm({ usuario: "", password: "" });
     setUsuarioEditado("");
   }
 
   function eliminarUsuario(nombre) {
-    guardarUsuarios(usuarios.filter((cuenta) => cuenta.usuario !== nombre));
-    if (usuarioEditado === nombre) {
-      setUsuarioEditado("");
-      setUsuarioForm({ usuario: "", password: "" });
-    }
-    setAviso("Usuario eliminado.");
+    confirmarAccion("¿Estás seguro de eliminar este usuario?", () => {
+      guardarUsuarios(usuarios.filter((cuenta) => cuenta.usuario !== nombre));
+      if (usuarioEditado === nombre) {
+        setUsuarioEditado("");
+        setUsuarioForm({ usuario: "", password: "" });
+      }
+      setAviso("Usuario eliminado.");
+    }, true);
   }
 
   function actualizarSitio(grupo, campo, valor) {
@@ -171,6 +195,17 @@ function Admin({
 
   function actualizarCampo(setFormulario, campo, valor) {
     setFormulario((actual) => ({ ...actual, [campo]: valor }));
+  }
+
+  function confirmarAccion(mensaje, accion, esEliminacion = false) {
+    setConfirmacion({ mensaje, accion, esEliminacion });
+  }
+
+  function ejecutarConfirmacion() {
+    if (!confirmacion) return;
+    const { accion } = confirmacion;
+    setConfirmacion(null);
+    accion();
   }
 
   return (
@@ -354,6 +389,64 @@ function Admin({
               ))}
               {usuarios.length === 0 && <li>No hay cuentas registradas.</li>}
             </ul>
+          </div>
+        </div>
+      )}
+
+      {confirmacion && (
+        <div
+          className="confirmacion-admin-overlay"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setConfirmacion(null);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setConfirmacion(null);
+              return;
+            }
+            if (event.key === "Tab") {
+              const botones = event.currentTarget.querySelectorAll("button");
+              const primero = botones[0];
+              const ultimo = botones[botones.length - 1];
+              if (event.shiftKey && document.activeElement === primero) {
+                event.preventDefault();
+                ultimo.focus();
+              } else if (!event.shiftKey && document.activeElement === ultimo) {
+                event.preventDefault();
+                primero.focus();
+              }
+            }
+          }}
+        >
+          <div
+            className={`confirmacion-admin${confirmacion.esEliminacion ? " confirmacion-admin--destructiva" : ""}`}
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="confirmacion-admin-titulo"
+            aria-describedby="confirmacion-admin-mensaje"
+          >
+            <span className="confirmacion-admin-icono" aria-hidden="true">
+              {confirmacion.esEliminacion ? "!" : "?"}
+            </span>
+            <h3 id="confirmacion-admin-titulo">¿Confirmas esta acción?</h3>
+            <p id="confirmacion-admin-mensaje">{confirmacion.mensaje}</p>
+            <div className="confirmacion-admin-acciones">
+              <button
+                type="button"
+                className="confirmacion-admin-cancelar"
+                autoFocus
+                onClick={() => setConfirmacion(null)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="confirmacion-admin-aceptar"
+                onClick={ejecutarConfirmacion}
+              >
+                {confirmacion.esEliminacion ? "Sí, eliminar" : "Sí, continuar"}
+              </button>
+            </div>
           </div>
         </div>
       )}

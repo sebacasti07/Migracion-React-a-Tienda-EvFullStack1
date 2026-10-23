@@ -813,6 +813,11 @@ select {
   width: 100%;
 }
 
+option {
+  background-color: #111111;
+  color: #f5f5f5;
+}
+
 select:focus {
   border-color: #ffad1f;
   outline: none;
@@ -1595,6 +1600,12 @@ button.enlace-cuenta:focus-visible {
   overflow-wrap: anywhere;
 }
 
+.lista-admin .acciones-admin {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .lista-admin button,
 .acciones-admin button {
   padding: 8px 10px;
@@ -1608,9 +1619,133 @@ button.enlace-cuenta:focus-visible {
   background: #d94343;
 }
 
+.confirmacion-admin-overlay {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 20px;
+  position: fixed;
+  z-index: 20;
+}
+
+.confirmacion-admin {
+  background: linear-gradient(145deg, #252525, #171717);
+  border: 1px solid #f28c00;
+  border-radius: 10px;
+  box-shadow: 0 0 32px rgba(242, 140, 0, 0.22);
+  max-width: 440px;
+  padding: 32px;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+.confirmacion-admin::before {
+  background: #f28c00;
+  border-radius: 10px 10px 0 0;
+  content: "";
+  height: 4px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.confirmacion-admin-icono {
+  align-items: center;
+  background: rgba(242, 140, 0, 0.14);
+  border: 1px solid #f28c00;
+  border-radius: 50%;
+  color: #ffad1f;
+  display: inline-flex;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  height: 52px;
+  justify-content: center;
+  margin-bottom: 14px;
+  width: 52px;
+}
+
+.confirmacion-admin h3 {
+  color: #ffad1f;
+  font-size: 1.15rem;
+  margin: 0 0 10px;
+}
+
+.confirmacion-admin p {
+  color: #d0d0d0;
+  margin: 0;
+}
+
+.confirmacion-admin-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 26px;
+}
+
+.confirmacion-admin-acciones button {
+  min-width: 140px;
+}
+
+.confirmacion-admin .confirmacion-admin-cancelar {
+  background: #333333;
+  border: 1px solid #666666;
+  color: #f5f5f5;
+}
+
+.confirmacion-admin .confirmacion-admin-cancelar:hover,
+.confirmacion-admin .confirmacion-admin-cancelar:focus-visible {
+  background: #444444;
+  border-color: #b5b5b5;
+  color: #ffffff;
+}
+
+.confirmacion-admin--destructiva {
+  border-color: #d94343;
+  box-shadow: 0 0 32px rgba(217, 67, 67, 0.2);
+}
+
+.confirmacion-admin--destructiva::before {
+  background: #d94343;
+}
+
+.confirmacion-admin--destructiva .confirmacion-admin-icono {
+  background: rgba(217, 67, 67, 0.14);
+  border-color: #d94343;
+  color: #ff7777;
+}
+
+.confirmacion-admin--destructiva h3 {
+  color: #ff7777;
+}
+
+.confirmacion-admin .confirmacion-admin-aceptar {
+  background: #f28c00;
+  color: #111111;
+}
+
+.confirmacion-admin--destructiva .confirmacion-admin-aceptar {
+  background: #a92d2d;
+  color: #ffffff;
+}
+
+.confirmacion-admin--destructiva .confirmacion-admin-aceptar:hover,
+.confirmacion-admin--destructiva .confirmacion-admin-aceptar:focus-visible {
+  background: #d94343;
+}
+
 @media (max-width: 760px) {
   .admin-contenido {
     grid-template-columns: 1fr;
+  }
+
+  .confirmacion-admin {
+    padding: 28px 20px 22px;
   }
 
   .lista-admin li {
