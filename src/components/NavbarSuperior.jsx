@@ -38,22 +38,11 @@ function NavbarSuperior({ carrito = [] }) {
               <li><Link to="/nosotros">Nosotros</Link></li>
               <li><Link to="/blogs">Blogs</Link></li>
               <li><Link to="/#contacto">Contactos</Link></li>
-              <li>
-                <Link
-                  className="enlace-carrito"
-                  to="/carrito"
-                  aria-label={`Ver carrito, ${cantidadProductos} productos`}
-                  title="Ver carrito"
-                >
-                  <span className="logo-carrito" aria-hidden="true">
-                    🛒
-                    <span className="contador-carrito">{cantidadProductos}</span>
-                  </span>
-                </Link>
-              </li>
             </ul>
           </nav>
+        </div>
 
+        <div className="acciones-header">
           <div className="cuadro-cuenta">
             {usuario ? (
               <>
@@ -84,6 +73,17 @@ function NavbarSuperior({ carrito = [] }) {
               </>
             )}
           </div>
+          <Link
+            className="enlace-carrito"
+            to="/carrito"
+            aria-label={`Ver carrito, ${cantidadProductos} productos`}
+            title="Ver carrito"
+          >
+            <span className="logo-carrito" aria-hidden="true">
+              🛒
+              <span className="contador-carrito">{cantidadProductos}</span>
+            </span>
+          </Link>
         </div>
       </div>
     </header>
