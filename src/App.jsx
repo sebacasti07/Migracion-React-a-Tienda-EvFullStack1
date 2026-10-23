@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Login from "./pages/login";
 import CrearUsuario from "./pages/CrearUsuario";
+import ConfigurarAcceso from "./pages/ConfigurarAcceso";
 import {
   BrowserRouter,
   Routes,
@@ -252,6 +253,10 @@ function App() {
 <Route
   path="/login"
   element={<Login usuarios={usuarios} />}
+/>
+<Route
+  path="/configurar-acceso"
+  element={<ConfigurarAcceso />}
 />
 <Route
   path="/registro"

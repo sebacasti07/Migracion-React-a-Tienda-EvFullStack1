@@ -152,10 +152,13 @@ Formulario de acceso.
 
 Hace:
 - captura usuario y contraseña en estado local
-- en la primera configuración solicita crear la contraseña local del usuario `admin`
-- en accesos posteriores valida las credenciales locales del administrador o de un usuario registrado
+- usa el mismo formulario de usuario y contraseña para todas las cuentas
+- valida las credenciales locales del administrador o de un usuario registrado
 - guarda usuario y rol de la sesión en `sessionStorage`
 - redirige administradores a `/admin` y usuarios a `/carrito`
+
+### `ConfigurarAcceso.jsx`
+Pantalla separada para definir por primera vez la contraseña de la cuenta administrativa. No forma parte del formulario normal de inicio de sesión y deja la sesión cerrada al terminar.
 
 ### `CarritoPage.jsx`
 Es la pantalla del carrito con protección de acceso.
@@ -300,17 +303,17 @@ si llega a 0, se elimina del carrito
 setCarrito(...) actualiza estado
 ```
 
-### Flujo 4: configurar administrador o iniciar sesión
+### Flujo 4: configurar acceso inicial e iniciar sesión
 ```text
-Primera visita al formulario de inicio de sesión
+Primera configuración desde /configurar-acceso
         ↓
-se solicita crear y confirmar la contraseña de admin
+se crea la contraseña local de la cuenta administrativa
         ↓
 las credenciales se guardan en localStorage
         ↓
-se inicia una sesión con rol admin
+se vuelve al formulario común de inicio de sesión
         ↓
-en visitas posteriores se valida contra la cuenta local configurada
+se validan igual las credenciales administrativas y las cuentas registradas
         ↓
 navigate("/admin") o navigate("/carrito")
 ```
