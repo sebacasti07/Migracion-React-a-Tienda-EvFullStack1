@@ -15,8 +15,25 @@ Validaciones:
 
 ```sh
 npm run lint
+npm run test:run
 npm run build
 ```
+
+Para ejecutar las pruebas en modo watch durante el desarrollo:
+
+```sh
+npm test
+```
+
+Para ejecutar las pruebas de navegador en Chromium real con Playwright:
+
+```sh
+npm run test:browser
+```
+
+La suite habitual usa Vitest con jsdom; las pruebas `*.browser.test.jsx` corren
+en Chromium. Los matchers de `@testing-library/jest-dom` y la limpieza de React
+Testing Library se configuran en `src/test/setup.js`.
 
 ## Administrador y almacenamiento
 
