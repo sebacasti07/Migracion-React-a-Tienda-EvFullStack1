@@ -1,5 +1,6 @@
 import videoGamer from "../images/video_gamer.mp4";
 import { useAuth } from "../context/AuthContext";
+import FormularioContacto from "../components/FormularioContacto";
 
 function Inicio({ contenido }) {
   const { usuario } = useAuth();
@@ -101,23 +102,7 @@ function Inicio({ contenido }) {
           </div>
         </div>
 
-        <form id="formularioContacto" className="formulario-contacto" noValidate>
-          <h3>Escríbenos</h3>
-          <label htmlFor="nombreContacto">Nombre</label>
-          <input id="nombreContacto" name="nombreContacto" maxLength={100} required />
-          <span id="errorNombreContacto" className="mensaje-error"></span>
-
-          <label htmlFor="correoContacto">Correo</label>
-          <input id="correoContacto" name="correoContacto" type="email" required />
-          <span id="errorCorreoContacto" className="mensaje-error"></span>
-
-          <label htmlFor="mensajeContacto">Mensaje</label>
-          <textarea id="mensajeContacto" name="mensajeContacto" maxLength={500} required></textarea>
-          <span id="errorMensajeContacto" className="mensaje-error"></span>
-
-          <button type="submit">Enviar mensaje</button>
-          <p id="mensajeContactoExitoso" className="mensaje-exito"></p>
-        </form>
+        <FormularioContacto />
       </section>
     </div>
   );
