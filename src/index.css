@@ -2048,6 +2048,21 @@ body {
   font-size: 3rem;
 }
 
+/* El desplazamiento del encabezado (translateX) hacía que el cuadro de cuenta
+   se saliera de la pantalla en tablets y celulares */
+@media (max-width: 1100px) {
+  .acciones-header {
+    transform: none;
+    flex-wrap: wrap;
+  }
+
+  .cuadro-cuenta {
+    flex-wrap: wrap;
+    height: auto;
+    max-width: 100%;
+  }
+}
+
 /* Mantenedor de productos: la tabla necesita más espacio que el formulario */
 .admin-contenido--tabla {
   grid-template-columns: minmax(260px, 1fr) minmax(0, 2.2fr);
