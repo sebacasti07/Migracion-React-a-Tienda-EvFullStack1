@@ -1,7 +1,8 @@
 import videoGamer from "../images/video_gamer.mp4";
+import { useAuth } from "../context/AuthContext";
 
 function Inicio({ contenido }) {
-  const usuario = sessionStorage.getItem("usuario");
+  const { usuario } = useAuth();
 
   return (
     <div className="pagina-inicio">
@@ -9,8 +10,8 @@ function Inicio({ contenido }) {
         <h2>Video de Lanzamiento</h2>
         <p>
           {usuario
-            ? "Conoce nuestra tienda y catálogo de productos."
-            : "Inicia sesión para acceder a nuestra tienda y catálogo de productos."}
+            ? `Hola ${usuario.nombre}, conoce nuestra tienda y catálogo de productos.`
+            : "Inicia sesión para comprar en nuestra tienda y revisar tus pedidos."}
         </p>
         <div className="contenedor-video">
           <video

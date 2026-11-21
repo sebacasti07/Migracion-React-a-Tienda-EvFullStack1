@@ -1,13 +1,18 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import contenidoInicial from '../data/contenidoSitio'
 import Inicio from './Inicio'
+import { renderConAuth } from '../test/utilidades'
 
 describe('1. Pruebas de Inicio.jsx', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
   it('Prueba 1: Permite escribir en todos los campos del formulario de contacto', async () => {
     const user = userEvent.setup()
-    render(<Inicio contenido={contenidoInicial} />)
+    renderConAuth(<Inicio contenido={contenidoInicial} />)
 
     const campoNombre = screen.getByRole('textbox', { name: 'Nombre' })
     const campoCorreo = screen.getByRole('textbox', { name: 'Correo' })
@@ -23,7 +28,7 @@ describe('1. Pruebas de Inicio.jsx', () => {
   })
 
   it('Prueba 2: Renderiza la dirección física y los enlaces de redes sociales', () => {
-    render(<Inicio contenido={contenidoInicial} />)
+    renderConAuth(<Inicio contenido={contenidoInicial} />)
 
     expect(screen.getByText(/Avenida Providencia 1234/i)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /WhatsApp/i })).toBeInTheDocument()

@@ -1,13 +1,20 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import ListaProductos from "../components/ListaProductos";
 import NavbarLateral from "../components/NavbarLateral";
-import { useSearchParams } from "react-router-dom";
+import Cargando from "../components/Cargando";
+import { useAuth } from "../context/AuthContext";
 
-function Productos({ agregarAlCarrito, productos }) {
+// Catálogo. Los productos llegan desde GET /api/v1/productos (hook useCatalogo en App).
+function Productos({ agregarAlCarrito, catalogo }) {
+  const { productos = [], categorias = [], cargando, error, recargar } = catalogo ?? {};
   const [searchParams] = useSearchParams();
   const categoria = searchParams.get("categoria");
   const [busqueda, setBusqueda] = useState("");
   const [ordenPrecio, setOrdenPrecio] = useState("desc");
+  const { puede, autenticado } = useAuth();
+  // Sin sesión se puede mirar; al agregar se pide iniciar sesión en el carrito
+  const mostrarAgregar = !autenticado || puede("tienda.comprar");
 
   return (
     <section className="pagina-productos">
@@ -43,16 +50,28 @@ function Productos({ agregarAlCarrito, productos }) {
         </div>
       </div>
 
+      {error && (
+        <div className="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+          <span>{error}</span>
+          <button type="button" className="btn btn-sm btn-outline-light" onClick={recargar}>Reintentar</button>
+        </div>
+      )}
+
       <div className="layout-tienda">
-        <NavbarLateral productos={productos} />
+        <NavbarLateral productos={productos} categorias={categorias} mostrarCarrito={mostrarAgregar} />
         <div className="productos-catalogo">
-          <ListaProductos
-            productos={productos}
-            agregarAlCarrito={agregarAlCarrito}
-            categoria={categoria}
-            busqueda={busqueda}
-            ordenPrecio={ordenPrecio}
-          />
+          {cargando ? (
+            <Cargando texto="Cargando productos..." />
+          ) : (
+            <ListaProductos
+              productos={productos}
+              agregarAlCarrito={agregarAlCarrito}
+              categoria={categoria}
+              busqueda={busqueda}
+              ordenPrecio={ordenPrecio}
+              mostrarAgregar={mostrarAgregar}
+            />
+          )}
         </div>
       </div>
     </section>

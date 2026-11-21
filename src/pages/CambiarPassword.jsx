@@ -1,31 +1,22 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
 import CampoContraseña from "../components/CampoContraseña";
+import { authApi } from "../api/servicios";
+import { mensajeError } from "../api/cliente";
 
-function CambiarPassword({ usuarios = [], guardarUsuarios }) {
+// Envía PUT /api/v1/auth/password con el token del usuario conectado.
+// El backend compara la contraseña actual con el hash BCrypt antes de cambiarla.
+function CambiarPassword() {
   const [passwordActual, setPasswordActual] = useState("");
   const [nuevaPassword, setNuevaPassword] = useState("");
   const [confirmarPassword, setConfirmarPassword] = useState("");
   const [error, setError] = useState("");
   const [aviso, setAviso] = useState("");
-  const nombreUsuario = sessionStorage.getItem("usuario");
-  const cuenta = usuarios.find(
-    (usuario) => usuario.usuario.toLowerCase() === nombreUsuario?.toLowerCase()
-  );
+  const [enviando, setEnviando] = useState(false);
 
-  if (!nombreUsuario || sessionStorage.getItem("rol") === "admin" || !cuenta) {
-    return <Navigate to="/login" replace />;
-  }
-
-  function cambiarPassword(event) {
+  async function cambiarPassword(event) {
     event.preventDefault();
     setError("");
     setAviso("");
-
-    if (cuenta.password !== passwordActual) {
-      setError("La contraseña actual es incorrecta.");
-      return;
-    }
 
     if (nuevaPassword.length < 8) {
       setError("La nueva contraseña debe tener al menos 8 caracteres.");
@@ -37,17 +28,18 @@ function CambiarPassword({ usuarios = [], guardarUsuarios }) {
       return;
     }
 
-    guardarUsuarios(
-      usuarios.map((usuario) =>
-        usuario.usuario === cuenta.usuario
-          ? { ...usuario, password: nuevaPassword }
-          : usuario
-      )
-    );
-    setPasswordActual("");
-    setNuevaPassword("");
-    setConfirmarPassword("");
-    setAviso("Tu contraseña se cambió correctamente.");
+    setEnviando(true);
+    try {
+      await authApi.cambiarPassword(passwordActual, nuevaPassword);
+      setPasswordActual("");
+      setNuevaPassword("");
+      setConfirmarPassword("");
+      setAviso("Tu contraseña se cambió correctamente.");
+    } catch (e) {
+      setError(mensajeError(e, "No se pudo cambiar la contraseña."));
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -93,12 +85,8 @@ function CambiarPassword({ usuarios = [], guardarUsuarios }) {
         {error && <p className="mensaje-error" role="alert">{error}</p>}
         {aviso && <p className="mensaje-exito" role="status">{aviso}</p>}
 
-        <button type="submit">Guardar nueva contraseña</button>
+        <button type="submit" disabled={enviando}>Guardar nueva contraseña</button>
       </form>
-
-      <p className="nota-login">
-        El cambio se guarda en este navegador y solo se puede usar aquí.
-      </p>
     </div>
   );
 }

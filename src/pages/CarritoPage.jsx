@@ -1,30 +1,20 @@
-import { Navigate } from "react-router-dom";
 import Carrito from "../components/Carrito";
 
+// La protección (iniciar sesión y rol) la hace <RutaProtegida> en App.jsx
 function CarritoPage({
   carrito,
   aumentarCantidad,
   disminuirCantidad,
   eliminarDelCarrito
 }) {
-
-  const usuario = sessionStorage.getItem("usuario");
-
-  // Si NO está logueado
-  if (!usuario) {
-    return <Navigate to="/login" />;
-  }
-
   return (
     <section className="pagina-carrito">
-
       <Carrito
         carrito={carrito}
         aumentarCantidad={aumentarCantidad}
         disminuirCantidad={disminuirCantidad}
         eliminarDelCarrito={eliminarDelCarrito}
       />
-
     </section>
   );
 }
