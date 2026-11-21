@@ -35,6 +35,21 @@ La suite habitual usa Vitest con jsdom; las pruebas `*.browser.test.jsx` corren
 en Chromium. Los matchers de `@testing-library/jest-dom` y la limpieza de React
 Testing Library se configuran en `src/test/setup.js`.
 
+### Pruebas con Jasmine + Karma
+
+Las pruebas unitarias que pide la pauta (Jasmine y Karma) están en `src/specs/*.spec.js`
+y corren en un navegador real sin ventana (Chrome, o Edge si no hay Chrome instalado):
+
+```sh
+npm run test:karma
+```
+
+Están separadas según la propuesta de pruebas: `renderizado`, `props`, `estado`,
+`eventos`, `mocks-api` (servicios simulados con `spyOn` de Jasmine) y `utilidades`.
+Al terminar se genera el reporte de cobertura en `coverage/karma/html/index.html`.
+La configuración está en `karma.conf.cjs` (esbuild compila el JSX y un plugin de
+Istanbul instrumenta el código de `src` para medir la cobertura).
+
 ## Integración con el backend (Evaluación 3)
 
 El frontend consume la API REST del proyecto **tienda-backend** (Spring Boot + JWT).

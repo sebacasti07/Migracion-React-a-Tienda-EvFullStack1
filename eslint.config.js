@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'coverage']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -17,5 +17,16 @@ export default defineConfig([
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+  },
+  {
+    // Pruebas con Jasmine + Karma
+    files: ['src/specs/**/*.{js,jsx}'],
+    languageOptions: { globals: { ...globals.browser, ...globals.jasmine } },
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+  {
+    // Configuración de Karma (Node, CommonJS)
+    files: ['karma.conf.cjs'],
+    languageOptions: { globals: globals.node, sourceType: 'commonjs' },
   },
 ])
