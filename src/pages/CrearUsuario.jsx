@@ -34,7 +34,7 @@ function CrearUsuario() {
   }
 
   function validar() {
-    if (!runValido(form.run)) return "El RUN no es válido (ej: 19011022K, sin puntos ni guion).";
+    if (!runValido(form.run)) return "El RUN no es válido (ej: 201234565, sin puntos ni guion).";
     if (!form.nombre.trim() || !form.apellidos.trim()) return "Ingresa tu nombre y apellidos.";
     if (!correoPermitido(form.correo)) return "Solo se permiten correos @duoc.cl, @profesor.duoc.cl o @gmail.com.";
     if (!form.region || !comunasDisponibles.includes(form.comuna)) return "Selecciona tu región y comuna.";
@@ -84,7 +84,7 @@ function CrearUsuario() {
             id="run"
             value={form.run}
             onChange={(e) => cambiar("run", e.target.value)}
-            placeholder="19011022K"
+            placeholder="201234565"
             maxLength={12}
             required
           />
