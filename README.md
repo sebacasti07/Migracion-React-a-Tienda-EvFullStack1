@@ -52,7 +52,8 @@ Istanbul instrumenta el código de `src` para medir la cobertura).
 
 ## Integración con el backend (Evaluación 3)
 
-El frontend consume la API REST del proyecto **tienda-backend** (Spring Boot + JWT).
+El frontend consume la API REST del proyecto **tienda-backend** (Spring Boot + JWT),
+disponible en https://github.com/Test-debug10/tienda-backend.
 Antes de `npm run dev` hay que levantar el backend (`./mvnw spring-boot:run`), que queda en
 `http://localhost:8080`. Para usar otra URL se crea un archivo `.env`:
 
