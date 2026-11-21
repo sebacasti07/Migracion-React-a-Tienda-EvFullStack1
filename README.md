@@ -35,16 +35,34 @@ La suite habitual usa Vitest con jsdom; las pruebas `*.browser.test.jsx` corren
 en Chromium. Los matchers de `@testing-library/jest-dom` y la limpieza de React
 Testing Library se configuran en `src/test/setup.js`.
 
-## Administrador y almacenamiento
+## Integración con el backend (Evaluación 3)
 
-El acceso inicial de administrador es usuario `Admin` y contraseña
-`Admin1234@`; ya no se solicita configurar la contraseña al abrir el inicio de
-sesión. Los usuarios registrados pueden cambiar su contraseña desde el menú de
-cuenta, y el administrador puede cambiarla desde la sección **Usuarios** del
-panel. Las cuentas se guardan en `localStorage` y solo existen en ese navegador.
+El frontend consume la API REST del proyecto **tienda-backend** (Spring Boot + JWT).
+Antes de `npm run dev` hay que levantar el backend (`./mvnw spring-boot:run`), que queda en
+`http://localhost:8080`. Para usar otra URL se crea un archivo `.env`:
 
-Este proyecto es una demostración frontend: no tiene backend, las contraseñas
-no están protegidas por un servidor y el estado de sesión del navegador no
-constituye una barrera de seguridad. No usar con datos reales ni desplegar como
-sistema administrativo de producción. Cambia la contraseña predeterminada si
-usas esta demostración en un entorno compartido.
+```sh
+VITE_API_URL=http://IP_DEL_SERVIDOR:8080/api/v1
+```
+
+### Cuentas de prueba
+
+| Rol | Correo | Contraseña | Qué puede hacer |
+|---|---|---|---|
+| Administrador | admin@duoc.cl | Admin1234@ | Todo: productos, categorías, órdenes, usuarios y contenido |
+| Vendedor | vendedor@duoc.cl | Vendedor123@ | Ver productos y órdenes (lista y detalle), sin modificar |
+| Cliente | cliente@gmail.com | Cliente123@ | Comprar en la tienda y ver sus compras |
+
+### Cómo está armado
+
+- `src/api/cliente.js`: instancia de **axios**. Un interceptor agrega `Authorization: Bearer <token>`
+  a cada petición y, si el backend responde 401, renueva el token con `/auth/refresh` y repite la petición.
+- `src/api/servicios.js`: una función por endpoint (`productosApi`, `ordenesApi`, `usuariosApi`, etc.).
+- `src/context/AuthContext.jsx`: guarda la sesión (token, refresh token y usuario) en `localStorage`,
+  así sobrevive a recargas. Al iniciar, confirma la sesión con `GET /auth/me`, cierra sola cuando vence el
+  refresh token y se sincroniza entre pestañas.
+- `src/components/RutaProtegida.jsx` y `src/utils/permisos.js`: restringen rutas, pestañas y botones según el rol.
+  Es solo la capa visual: el backend vuelve a validar el rol en cada petición.
+- Flujo de compra: carrito → `/checkout` → `POST /ordenes` → `/compra-exitosa/:id` o `/compra-fallida`.
+
+Blogs y textos de "Nosotros" y "Contacto" siguen guardándose en el navegador.
