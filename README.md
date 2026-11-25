@@ -54,12 +54,15 @@ Istanbul instrumenta el código de `src` para medir la cobertura).
 
 El frontend consume la API REST del proyecto **tienda-backend** (Spring Boot + JWT),
 disponible en https://github.com/Test-debug10/tienda-backend.
-Antes de `npm run dev` hay que levantar el backend (`./mvnw spring-boot:run`), que queda en
-`http://localhost:8080`. Para usar otra URL se crea un archivo `.env`:
+Hay dos formas de usarlo:
 
-```sh
-VITE_API_URL=http://IP_DEL_SERVIDOR:8080/api/v1
-```
+| Comando | Backend al que llama | Cuándo |
+|---|---|---|
+| `npm run dev:ec2` | `http://52.5.171.74:8080/api/v1` (instancia AWS EC2, IP elástica) | La entrega: el backend corre en EC2 y parte solo al hacer Start Lab en el Learner Lab |
+| `npm run dev` | `http://localhost:8080/api/v1` | Desarrollo: antes hay que levantar el backend local con `./mvnw spring-boot:run` |
+
+La URL del modo EC2 está en el archivo `.env.ec2`. Para apuntar a otro servidor se puede crear un `.env`
+con `VITE_API_URL=http://IP_DEL_SERVIDOR:8080/api/v1`.
 
 ### Cuentas de prueba
 

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:ec2": "vite --mode ec2",
     "build": "vite build",
     "lint": "eslint .",
     "test": "vitest",
