@@ -50,7 +50,7 @@ function AdminUsuarios() {
   function validar() {
     if (!runValido(form.run)) return "El RUN no es válido.";
     if (!form.nombre.trim() || !form.apellidos.trim()) return "Nombre y apellidos son obligatorios.";
-    if (!correoPermitido(form.correo)) return "Solo correos @duoc.cl, @profesor.duoc.cl o @gmail.com.";
+    if (!correoPermitido(form.correo)) return "Solo correos @duoc.cl, @duocuc.cl, @profesor.duoc.cl o @gmail.com.";
     if (!form.id && form.password.length < 8) return "La contraseña debe tener al menos 8 caracteres.";
     if (form.id && form.password && form.password.length < 8) return "La nueva contraseña debe tener al menos 8 caracteres.";
     return "";

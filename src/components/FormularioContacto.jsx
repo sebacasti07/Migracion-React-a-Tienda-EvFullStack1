@@ -9,7 +9,7 @@ export function validarContacto({ nombre, correo, mensaje }) {
   const errores = {};
   if (!nombre.trim()) errores.nombre = "Ingresa tu nombre.";
   else if (nombre.trim().length > 100) errores.nombre = "El nombre puede tener máximo 100 caracteres.";
-  if (!correoPermitido(correo)) errores.correo = "Usa un correo @duoc.cl, @profesor.duoc.cl o @gmail.com.";
+  if (!correoPermitido(correo)) errores.correo = "Usa un correo @duoc.cl, @duocuc.cl, @profesor.duoc.cl o @gmail.com.";
   if (!mensaje.trim()) errores.mensaje = "Escribe tu mensaje.";
   else if (mensaje.trim().length > 500) errores.mensaje = "El mensaje puede tener máximo 500 caracteres.";
   return errores;

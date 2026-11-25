@@ -36,7 +36,7 @@ function CrearUsuario() {
   function validar() {
     if (!runValido(form.run)) return "El RUN no es válido (ej: 201234565, sin puntos ni guion).";
     if (!form.nombre.trim() || !form.apellidos.trim()) return "Ingresa tu nombre y apellidos.";
-    if (!correoPermitido(form.correo)) return "Solo se permiten correos @duoc.cl, @profesor.duoc.cl o @gmail.com.";
+    if (!correoPermitido(form.correo)) return "Solo se permiten correos @duoc.cl, @duocuc.cl, @profesor.duoc.cl o @gmail.com.";
     if (!form.region || !comunasDisponibles.includes(form.comuna)) return "Selecciona tu región y comuna.";
     if (!form.direccion.trim()) return "Ingresa tu dirección.";
     if (form.password.length < 8) return "La contraseña debe tener al menos 8 caracteres.";

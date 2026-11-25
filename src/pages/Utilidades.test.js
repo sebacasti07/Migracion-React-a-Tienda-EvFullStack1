@@ -17,6 +17,7 @@ describe('Validaciones de formularios', () => {
 
   it('Solo acepta correos de los dominios permitidos', () => {
     expect(correoPermitido('alumno@duoc.cl')).toBe(true)
+    expect(correoPermitido('alumno@duocuc.cl')).toBe(true)
     expect(correoPermitido('profe@profesor.duoc.cl')).toBe(true)
     expect(correoPermitido('persona@gmail.com')).toBe(true)
     expect(correoPermitido('persona@hotmail.com')).toBe(false)

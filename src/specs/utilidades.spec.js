@@ -23,6 +23,7 @@ describe("Validaciones", () => {
 
   it("correoPermitido acepta solo los dominios del requisito", () => {
     expect(correoPermitido("a@duoc.cl")).toBeTrue();
+    expect(correoPermitido("a@duocuc.cl")).toBeTrue();
     expect(correoPermitido("b@profesor.duoc.cl")).toBeTrue();
     expect(correoPermitido("c@gmail.com")).toBeTrue();
     expect(correoPermitido("d@yahoo.com")).toBeFalse();

@@ -4,7 +4,7 @@
 // Se validan en el navegador para avisar rápido al usuario,
 // y el backend vuelve a validar lo mismo antes de guardar.
 
-export const DOMINIOS_PERMITIDOS = ["@duoc.cl", "@profesor.duoc.cl", "@gmail.com"];
+export const DOMINIOS_PERMITIDOS = ["@duoc.cl", "@duocuc.cl", "@profesor.duoc.cl", "@gmail.com"];
 
 export function correoPermitido(correo) {
   const valor = (correo || "").trim().toLowerCase();
