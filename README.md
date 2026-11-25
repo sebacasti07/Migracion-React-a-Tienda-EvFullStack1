@@ -1,3 +1,4 @@
+```markdown
 # Mi Tienda En Linea
 
 Tienda de demostración construida con React y Vite. Incluye catálogo con filtros,
@@ -54,15 +55,16 @@ Istanbul instrumenta el código de `src` para medir la cobertura).
 
 El frontend consume la API REST del proyecto **tienda-backend** (Spring Boot + JWT),
 disponible en https://github.com/Test-debug10/tienda-backend.
-Hay dos formas de usarlo:
+Hay tres formas de ejecutarlo:
 
-| Comando | Backend al que llama | Cuándo |
+| Modo / Comando | URL Base / API | Cuándo |
 |---|---|---|
-| `npm run dev:ec2` | `http://52.5.171.74:8080/api/v1` (instancia AWS EC2, IP elástica) | La entrega: el backend corre en EC2 y parte solo al hacer Start Lab en el Learner Lab |
-| `npm run dev` | `http://localhost:8080/api/v1` | Desarrollo: antes hay que levantar el backend local con `./mvnw spring-boot:run` |
+| Producción AWS EC2 (`Nginx`) | `http://52.5.171.74` (API en `/api/v1`) | Despliegue productivo: frontend compilado (`dist/`) servido por Nginx y enrutado al backend en puerto `8080` |
+| `npm run dev:ec2` | `http://52.5.171.74:8080/api/v1` | Desarrollo local apuntando al backend en AWS EC2 (IP elástica) |
+| `npm run dev` | `http://localhost:8080/api/v1` | Desarrollo 100% local: requiere levantar el backend con `./mvnw spring-boot:run` |
 
-La URL del modo EC2 está en el archivo `.env.ec2`. Para apuntar a otro servidor se puede crear un `.env`
-con `VITE_API_URL=http://IP_DEL_SERVIDOR:8080/api/v1`.
+La URL del modo EC2 local está en el archivo `.env.ec2`. Para el build de producción
+servido tras Nginx se utiliza ruta relativa (`VITE_API_URL=/api/v1`).
 
 ### Cuentas de prueba
 
@@ -77,7 +79,7 @@ con `VITE_API_URL=http://IP_DEL_SERVIDOR:8080/api/v1`.
 - `src/api/cliente.js`: instancia de **axios**. Un interceptor agrega `Authorization: Bearer <token>`
   a cada petición y, si el backend responde 401, renueva el token con `/auth/refresh` y repite la petición.
 - `src/api/servicios.js`: una función por endpoint (`productosApi`, `ordenesApi`, `usuariosApi`, etc.).
-- `src/context/AuthContext.jsx`: guarda la sesión (token, refresh token y usuario) en `localStorage`,
+- `src/context/AuthContext.jsx`: guarda la sesión (`sesionTienda`: token, refresh token y usuario) en `localStorage`,
   así sobrevive a recargas. Al iniciar, confirma la sesión con `GET /auth/me`, cierra sola cuando vence el
   refresh token y se sincroniza entre pestañas.
 - `src/components/RutaProtegida.jsx` y `src/utils/permisos.js`: restringen rutas, pestañas y botones según el rol.
@@ -85,3 +87,13 @@ con `VITE_API_URL=http://IP_DEL_SERVIDOR:8080/api/v1`.
 - Flujo de compra: carrito → `/checkout` → `POST /ordenes` → `/compra-exitosa/:id` o `/compra-fallida`.
 
 Blogs y textos de "Nosotros" y "Contacto" siguen guardándose en el navegador.
+
+## Despliegue en Producción (AWS EC2)
+
+La aplicación completa se encuentra desplegada en una instancia **AWS EC2 (Amazon Linux 2023)** con IP elástica `52.5.171.74`:
+
+- **Servidor Web y Proxy Inverso (`Nginx`):** Escucha en el puerto `80`, sirve los archivos estáticos compilados de React (`/var/www/tienda-frontend`) con soporte para rutas SPA (`try_files $uri$uri/ /index.html`) y redirige las peticiones `/api/` hacia el backend en `http://127.0.0.1:8080`.
+- **Backend (`Spring Boot` + `systemd`):** Ejecutado como servicio del sistema (`tienda-backend.service`) con arranque automático al iniciar la instancia EC2. Documentación interactiva disponible en `/swagger-ui/index.html`.
+- **Base de Datos (`PostgreSQL 15`):** Persistencia relacional local (`carrito_compras`) con credenciales inyectadas mediante variables de entorno en el servicio `systemd` (`DB_PASSWORD`).
+
+```
