@@ -1,4 +1,3 @@
-```markdown
 # Mi Tienda En Linea
 
 Tienda de demostración construida con React y Vite. Incluye catálogo con filtros,
@@ -92,8 +91,29 @@ Blogs y textos de "Nosotros" y "Contacto" siguen guardándose en el navegador.
 
 La aplicación completa se encuentra desplegada en una instancia **AWS EC2 (Amazon Linux 2023)** con IP elástica `52.5.171.74`:
 
-- **Servidor Web y Proxy Inverso (`Nginx`):** Escucha en el puerto `80`, sirve los archivos estáticos compilados de React (`/var/www/tienda-frontend`) con soporte para rutas SPA (`try_files $uri$uri/ /index.html`) y redirige las peticiones `/api/` hacia el backend en `http://127.0.0.1:8080`.
-- **Backend (`Spring Boot` + `systemd`):** Ejecutado como servicio del sistema (`tienda-backend.service`) con arranque automático al iniciar la instancia EC2. Documentación interactiva disponible en `/swagger-ui/index.html`.
-- **Base de Datos (`PostgreSQL 15`):** Persistencia relacional local (`carrito_compras`) con credenciales inyectadas mediante variables de entorno en el servicio `systemd` (`DB_PASSWORD`).
+- **Servidor Web y Proxy Inverso (`Nginx`):** Escucha en el puerto `80`, sirve los archivos estáticos compilados de React (`/var/www/tienda-frontend`) con soporte para rutas SPA (`try_files $uri $uri/ /index.html`) y redirige las peticiones `/api/` hacia el backend en `http://127.0.0.1:8080`.
+- **Backend (`Spring Boot` + `systemd`):** Ejecutado como servicio del sistema (`tienda-backend.service`) con arranque automático al iniciar la instancia EC2.
+- **Base de Datos (`PostgreSQL 15`):** Migrada desde H2 en memoria hacia **PostgreSQL 15** local (`jdbc:postgresql://localhost:5432/carrito_compras`), garantizando persistencia real de usuarios (con contraseñas cifradas en BCrypt), categorías, productos y órdenes entre reinicios del servidor. Las credenciales se gestionan de forma segura mediante variables de entorno en `systemd` (`DB_PASSWORD`).
+- **Documentación y Pruebas API (`Swagger UI` / OpenAPI 3):** Disponible en `http://52.5.171.74:8080/swagger-ui/index.html` (esquema JSON en `/v3/api-docs`). Permite probar el endpoint `POST /api/v1/auth/login`, obtener el token JWT y autorizar peticiones protegidas (`Authorize` con esquema `Bearer`) como `GET /api/v1/usuarios` y `GET /api/v1/ordenes`.
 
+### Verificación de PostgreSQL 15 en la instancia EC2
+
+Comandos para auditar el estado del motor de base de datos, listar las tablas creadas por JPA/Hibernate y comprobar los registros persistidos directamente desde la terminal SSH:
+
+```sh
+# 1. Verificar que el servicio PostgreSQL esté activo
+sudo systemctl status postgresql
+
+# 2. Listar las tablas creadas en la base de datos carrito_compras
+sudo -u postgres psql -d carrito_compras -c "\dt"
+
+# 3. Consultar los usuarios registrados y sus roles
+sudo -u postgres psql -d carrito_compras -c "SELECT id, nombre, correo, rol FROM usuarios;"
+
+# 4. Consultar los productos y órdenes almacenadas
+sudo -u postgres psql -d carrito_compras -c "SELECT id, nombre, precio, stock FROM productos;"
+sudo -u postgres psql -d carrito_compras -c "SELECT id, total, estado, fecha FROM ordenes;"
+
+# 5. Entrar a la consola interactiva de PostgreSQL (salir con \q)
+sudo -u postgres psql -d carrito_compras
 ```
